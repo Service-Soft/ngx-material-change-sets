@@ -1,0 +1,14 @@
+<h2 mat-dialog-title *ngIf="data.title">{{data.title}}</h2>
+
+<mat-dialog-content>
+    <p *ngFor="let paragraph of data.paragraphs">{{paragraph}}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button type="button" mat-raised-button (click)="confirm()" class="confirm-button">
+        {{data.confirmButtonLabel}}
+    </button>
+    <button type="button" mat-raised-button (click)="cancel()" class="cancel-button">
+        {{data.cancelButtonLabel}}
+    </button>
+</mat-dialog-actions>

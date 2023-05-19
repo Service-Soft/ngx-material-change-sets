@@ -1,0 +1,85 @@
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<mat-expansion-panel *ngFor="let changeSet of filteredChangeSets">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <span class="title-operation">
+                <i class="fas"
+                    [class.fa-circle-up]="changeSet.type === ChangeSetType.UPDATE || changeSet.type === ChangeSetType.REPLACE"
+                    [class.fa-circle-plus]="changeSet.type === ChangeSetType.CREATE"
+                    [class.fa-circle-minus]="changeSet.type === ChangeSetType.DELETE"
+                    [class.fa-clock-rotate-left]="changeSet.type === ChangeSetType.RESTORE"
+                    [class.fa-circle-left]="changeSet.type === ChangeSetType.RESET"
+                >
+                </i>
+                <span>{{internalConfig.getOperationName(changeSet)}}</span>
+            </span>
+            
+            <span class="title-created-at">
+                <i class="far fa-clock"></i>
+                <span class="date">{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
+                <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
+            </span>
+
+            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy" (click)="openCreatedBy($event, changeSet)">
+                <i class="fas fa-user"></i>
+                <span>{{internalConfig.getDisplayValueForCreatedBy(changeSet)}}</span>
+            </span>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <span>
+            <div>
+                <i class="far fa-clock"></i>
+                <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
+            </div>
+            <a [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy" (click)="openCreatedBy($event, changeSet)">
+                <i class="fas fa-user"></i>
+                <span>{{internalConfig.getDisplayValueForCreatedBy(changeSet)}}</span>
+            </a>
+        </span>
+        <button type="button" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
+            {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button type="button" [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)" mat-menu-item>This change set</button>
+            <button type="button" (click)="rollbackToChangeSet(changeSet)" mat-menu-item>Rollback all to this state</button>
+        </mat-menu>
+    </div>
+
+    <table *ngIf="changeSet.changes?.length">
+        <tr>
+            <th class="change-key-header">{{internalConfig.changeKeyLabel}}</th>
+            <th class="change-previous-value-header">{{internalConfig.previousValueLabel}}</th>
+            <th class="change-arrow-header"></th>
+            <th class="change-new-value-header">{{internalConfig.newValueLabel}}</th>
+        </tr>
+        <ng-container *ngFor="let change of changeSet.changes">
+            <tr>
+                <td colspan="2" class="change-key-header-mobile">{{change.key}}</td>
+            </tr>              
+            <tr>
+                <td class="change-key">{{change.key}}</td>
+                <td class="change-previous-value">
+                    <div class="change-value-field">
+                        {{change.previousValue ?? '-'}}
+                    </div>
+                </td>
+                <td class="change-arrow"><i class="fas fa-arrow-right-long"></i></td>
+                <td class="change-new-value">
+                    <div class="change-value-field">
+                        {{change.newValue ?? '-'}}
+                    </div>
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+
+</mat-expansion-panel>
+
+<mat-paginator [length]="internalEntity.changeSets.length"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    (page)="filterChangeSets($event)"
+>
+</mat-paginator>

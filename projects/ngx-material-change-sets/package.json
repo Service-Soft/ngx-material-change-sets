@@ -1,0 +1,22 @@
+{
+    "name": "ngx-material-change-sets",
+    "version": "15.0.0",
+    "keywords": [
+        "angular",
+        "material",
+        "change-tracking",
+        "change-sets",
+        "soft-delete",
+        "rollback",
+        "restore"
+    ],
+    "peerDependencies": {
+        "@angular/common": "15",
+        "@angular/core": "15",
+        "@angular/material": "15"
+    },
+    "dependencies": {
+        "tslib": "^2.3.0"
+    },
+    "sideEffects": false
+}
