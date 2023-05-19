@@ -1,5 +1,17 @@
+<form #formControl="ngForm" (ngSubmit)="updateEntity()" style="display: flex; margin-top: 20px; justify-content: center; align-items: center; gap: 15px">
+    <mat-form-field>
+        <mat-label>First Name</mat-label>
+        <input matInput [(ngModel)]="entity.firstName" name="firstName" type="text">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Last Name</mat-label>
+        <input matInput [(ngModel)]="entity.lastName" name="lastName" type="text">
+    </mat-form-field>
+    <button [disabled]="formControl.pristine || formControl.invalid" style="margin-bottom: 25px; margin-left: 10px;" type="submit" mat-raised-button>Update</button>
+</form>
+
 <h2 style="text-align: center;">Changes</h2>
 <div style="margin-left: 5%; margin-right: 5%;">
-    <ngx-mat-change-sets [entity]="entity" changeSetsApiBaseUrl="http://localhost:3000/test">
+    <ngx-mat-change-sets [entity]="entity" [changeSetsApiBaseUrl]="testBaseUrl">
     </ngx-mat-change-sets>
 </div>

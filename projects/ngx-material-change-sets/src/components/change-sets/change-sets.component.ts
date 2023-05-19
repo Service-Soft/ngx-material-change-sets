@@ -1,10 +1,10 @@
 import { AsyncPipe, DatePipe, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { firstValueFrom } from 'rxjs';
 import { ChangeSet, ChangeSetEntity, ChangeSetType } from '../../models';
 import { BaseChangeSetService, NGX_CHANGE_SET_SERVICE } from '../../services/change-set.service';
@@ -39,11 +39,21 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
     // eslint-disable-next-line jsdoc/require-jsdoc
     ChangeSetType: typeof ChangeSetType = ChangeSetType;
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    @ViewChild(MatPaginator)
+    paginator!: MatPaginator;
+
     /**
      * The entity for which the change sets should be displayed.
      */
     @Input()
-    entity?: Entity;
+    set entity(value: Entity) {
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (!value) {
+            throw new Error('No "entity" has been provided.');
+        }
+        this.updateEntity(value);
+    }
     // eslint-disable-next-line jsdoc/require-jsdoc
     internalEntity!: Entity;
 
@@ -74,6 +84,8 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
      */
     filteredChangeSets: ChangeSet[] = [];
 
+    private pageSize: number = 10;
+
     constructor(
         @Inject(NGX_CHANGE_SET_SERVICE)
         private readonly changeSetService: ChangeSetService,
@@ -81,11 +93,6 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
     ) {}
 
     ngOnInit(): void {
-        if (!this.entity) {
-            throw new Error('No "entity" has been provided.');
-        }
-        this.updateEntity(this.entity);
-        this.filteredChangeSets = this.internalEntity.changeSets.slice(0, 10);
         if (!this.changeSetsApiBaseUrl) {
             throw new Error('No "changeSetsApiBaseUrl" has been provided.');
         }
@@ -123,6 +130,7 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
         if (confirmResult === true) {
             const updatedEntity: Entity = await this.internalConfig.resetChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as Entity;
             this.updateEntity(updatedEntity);
+            this.paginator.pageIndex = 0;
         }
     }
 
@@ -143,7 +151,19 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
             // eslint-disable-next-line max-len
             const updatedEntity: Entity = await this.internalConfig.rollbackToChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as Entity;
             this.updateEntity(updatedEntity);
+            this.paginator.pageIndex = 0;
         }
+    }
+
+    /**
+     * Used by the ngFor to not rerender entries with the same id.
+     *
+     * @param index - The index of the element.
+     * @param item - The actual change set element.
+     * @returns The id of the change set, which is used to determine if two elements are equal.
+     */
+    trackById(index: number, item: ChangeSet): string {
+        return item.id;
     }
 
     /**
@@ -154,6 +174,7 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
     private updateEntity(updatedEntity: Entity): void {
         updatedEntity.changeSets.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         this.internalEntity = updatedEntity;
+        this.filteredChangeSets = this.internalEntity.changeSets.slice(0, this.pageSize);
     }
 
     /**
@@ -162,6 +183,7 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
      * @param event - The event from the paginator.
      */
     filterChangeSets(event: PageEvent): void {
+        this.pageSize = event.pageSize;
         const from: number = event.pageIndex * event.pageSize;
         const until: number = event.pageIndex * event.pageSize + event.pageSize;
         this.filteredChangeSets = this.internalEntity.changeSets.slice(from, until);
