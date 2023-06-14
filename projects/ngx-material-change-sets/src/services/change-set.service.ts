@@ -185,8 +185,8 @@ export abstract class BaseChangeSetService {
      * @param changeSet - The change set.
      * @returns Simple the createdBy value by default.
      */
-    getDisplayValueForCreatedBy(changeSet: ChangeSet): string {
-        return changeSet.createdBy ?? '';
+    async getDisplayValueForCreatedBy(changeSet: ChangeSet): Promise<string> {
+        return changeSet.createdBy ?? 'System';
     }
 
     /**

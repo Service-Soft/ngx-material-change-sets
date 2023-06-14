@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { AsyncPipe, DatePipe, KeyValue, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -53,6 +53,16 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
             throw new Error('No "entity" has been provided.');
         }
         this.updateEntity(value);
+        if (this.internalConfig != null) {
+            void Promise.all(this.internalEntity.changeSets.map(async c => {
+                return {
+                    key: c.id,
+                    value: await this.internalConfig.getDisplayValueForCreatedBy(c)
+                };
+            })).then(v => {
+                this.createdByDisplayValues = v;
+            });
+        }
     }
     // eslint-disable-next-line jsdoc/require-jsdoc
     internalEntity!: Entity;
@@ -86,13 +96,15 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
 
     private pageSize: number = 10;
 
+    private createdByDisplayValues: KeyValue<string, string>[] = [];
+
     constructor(
         @Inject(NGX_CHANGE_SET_SERVICE)
         private readonly changeSetService: ChangeSetService,
         private readonly dialog: MatDialog
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         if (!this.changeSetsApiBaseUrl) {
             throw new Error('No "changeSetsApiBaseUrl" has been provided.');
         }
@@ -187,5 +199,16 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
         const from: number = event.pageIndex * event.pageSize;
         const until: number = event.pageIndex * event.pageSize + event.pageSize;
         this.filteredChangeSets = this.internalEntity.changeSets.slice(from, until);
+    }
+
+    /**
+     * Gets the string to display for the created by value.
+     * This encapsulates the functionality of the async configuration function.
+     *
+     * @param changeSet - The change set to get the display value for.
+     * @returns Either the found display value of the local array or ''.
+     */
+    getDisplayValueForCreatedBy(changeSet: ChangeSet): string {
+        return this.createdByDisplayValues.find(v => v.key === changeSet.id)?.value ?? '';
     }
 }

@@ -82,7 +82,7 @@ export interface ChangeSetsConfig {
      *
      * @default simply return createdBy
      */
-    getDisplayValueForCreatedBy: (changeSet: ChangeSet) => string,
+    getDisplayValueForCreatedBy: (changeSet: ChangeSet) => Promise<string>,
     /**
      * What to do when the user clicks on the "Rollback to this change set" button.
      *

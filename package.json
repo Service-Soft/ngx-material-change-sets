@@ -9,10 +9,11 @@
         "lint": "eslint ./ --report-unused-disable-directives --max-warnings 0",
         "lint:fix": "eslint ./ --report-unused-disable-directives --max-warnings 0 --fix",
         "build:prod": "npm run build && npm run copyToDist",
-        "copyToDist": "npm run copyToDist:readme && npm run copyToDist:contributing && npm run copyToDist:license",
+        "copyToDist": "npm run copyToDist:readme && npm run copyToDist:contributing && npm run copyToDist:license && npm run copyToDist:image",
         "copyToDist:readme": "ncp ./README.md ./dist/ngx-material-change-sets/README.md",
         "copyToDist:contributing": "ncp ./CONTRIBUTING.md ./dist/ngx-material-change-sets/CONTRIBUTING.md",
-        "copyToDist:license": "ncp ./LICENSE.md ./dist/ngx-material-change-sets/LICENSE.md"
+        "copyToDist:license": "ncp ./LICENSE.md ./dist/ngx-material-change-sets/LICENSE.md",
+        "copyToDist:image": "ncp ./change-sets-component.png ./dist/ngx-material-change-sets/change-sets-component.png"
     },
     "private": true,
     "dependencies": {

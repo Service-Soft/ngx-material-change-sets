@@ -20,9 +20,9 @@
                 <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
             </span>
 
-            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy" (click)="openCreatedBy($event, changeSet)">
+            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy" (click)="openCreatedBy($event, changeSet)">
                 <i class="fas fa-user"></i>
-                <span>{{internalConfig.getDisplayValueForCreatedBy(changeSet)}}</span>
+                <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
             </span>
         </mat-panel-title>
     </mat-expansion-panel-header>
@@ -33,9 +33,9 @@
                 <i class="far fa-clock"></i>
                 <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
             </div>
-            <a [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy" (click)="openCreatedBy($event, changeSet)">
+            <a [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy" (click)="openCreatedBy($event, changeSet)">
                 <i class="fas fa-user"></i>
-                <span>{{internalConfig.getDisplayValueForCreatedBy(changeSet)}}</span>
+                <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
             </a>
         </span>
         <button type="button" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
