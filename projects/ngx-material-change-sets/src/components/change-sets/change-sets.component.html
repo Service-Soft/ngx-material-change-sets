@@ -1,6 +1,6 @@
 <!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <mat-expansion-panel *ngFor="let changeSet of filteredChangeSets; trackBy:trackById">
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header style="user-select: none;">
         <mat-panel-title>
             <span class="title-operation">
                 <i class="fas"
@@ -20,7 +20,10 @@
                 <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
             </span>
 
-            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy" (click)="openCreatedBy($event, changeSet)">
+            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy"
+                *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy"
+                (click)="openCreatedBy($event, changeSet)"
+            >
                 <i class="fas fa-user"></i>
                 <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
             </span>
@@ -33,10 +36,13 @@
                 <i class="far fa-clock"></i>
                 <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
             </div>
-            <a [class.created-by-link]="internalConfig.canOpenCreatedBy" *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy" (click)="openCreatedBy($event, changeSet)">
+            <span [class.created-by-link]="internalConfig.canOpenCreatedBy"
+                *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy"
+                (click)="openCreatedBy($event, changeSet)"
+            >
                 <i class="fas fa-user"></i>
                 <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
-            </a>
+            </span>
         </span>
         <button type="button" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
             {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>

@@ -11,7 +11,11 @@ export class ChangeSetService extends BaseChangeSetService {
         super(http);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    override async getDisplayValueForCreatedBy(changeSet: ChangeSet): Promise<string> {
+        await new Promise(res => setTimeout(res, 1000));
+        return changeSet.createdBy ?? 'System';
+    }
+
     override async openCreatedBy(changeSet: ChangeSet): Promise<void> {
         alert(await this.getDisplayValueForCreatedBy(changeSet));
     }

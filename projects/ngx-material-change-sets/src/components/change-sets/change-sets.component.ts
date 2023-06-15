@@ -35,7 +35,7 @@ import { ChangeSetsConfig } from './change-sets-config.model';
         MatPaginatorModule
     ]
 })
-export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetService extends BaseChangeSetService> implements OnInit {
+export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetService extends BaseChangeSetService> implements OnInit {
     // eslint-disable-next-line jsdoc/require-jsdoc
     ChangeSetType: typeof ChangeSetType = ChangeSetType;
 
@@ -47,25 +47,14 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
      * The entity for which the change sets should be displayed.
      */
     @Input()
-    set entity(value: Entity) {
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (!value) {
+    set entity(value: EntityType) {
+        if (value == null) {
             throw new Error('No "entity" has been provided.');
         }
-        this.updateEntity(value);
-        if (this.internalConfig != null) {
-            void Promise.all(this.internalEntity.changeSets.map(async c => {
-                return {
-                    key: c.id,
-                    value: await this.internalConfig.getDisplayValueForCreatedBy(c)
-                };
-            })).then(v => {
-                this.createdByDisplayValues = v;
-            });
-        }
+        void this.updateEntity(value);
     }
     // eslint-disable-next-line jsdoc/require-jsdoc
-    internalEntity!: Entity;
+    internalEntity!: EntityType;
 
     /**
      * The api base url for the change sets.
@@ -104,7 +93,7 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
         private readonly dialog: MatDialog
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         if (!this.changeSetsApiBaseUrl) {
             throw new Error('No "changeSetsApiBaseUrl" has been provided.');
         }
@@ -140,8 +129,8 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
         });
         const confirmResult: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
         if (confirmResult === true) {
-            const updatedEntity: Entity = await this.internalConfig.resetChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as Entity;
-            this.updateEntity(updatedEntity);
+            const entity: EntityType = await this.internalConfig.resetChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as EntityType;
+            await this.updateEntity(entity);
             this.paginator.pageIndex = 0;
         }
     }
@@ -161,8 +150,8 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
         const confirmResult: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
         if (confirmResult === true) {
             // eslint-disable-next-line max-len
-            const updatedEntity: Entity = await this.internalConfig.rollbackToChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as Entity;
-            this.updateEntity(updatedEntity);
+            const updatedEntity: EntityType = await this.internalConfig.rollbackToChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as EntityType;
+            await this.updateEntity(updatedEntity);
             this.paginator.pageIndex = 0;
         }
     }
@@ -183,10 +172,16 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
      *
      * @param updatedEntity - The new entity value.
      */
-    private updateEntity(updatedEntity: Entity): void {
+    private async updateEntity(updatedEntity: EntityType): Promise<void> {
         updatedEntity.changeSets.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         this.internalEntity = updatedEntity;
         this.filteredChangeSets = this.internalEntity.changeSets.slice(0, this.pageSize);
+        this.createdByDisplayValues = await Promise.all(this.internalEntity.changeSets.map(async c => {
+            return {
+                key: c.id,
+                value: await this.internalConfig.getDisplayValueForCreatedBy(c)
+            };
+        }));
     }
 
     /**
@@ -206,9 +201,17 @@ export class ChangeSetsComponent<Entity extends ChangeSetEntity, ChangeSetServic
      * This encapsulates the functionality of the async configuration function.
      *
      * @param changeSet - The change set to get the display value for.
-     * @returns Either the found display value of the local array or ''.
+     * @returns The found display value of the local array.
+     * @throws When the value to display is nullish or ''.
      */
     getDisplayValueForCreatedBy(changeSet: ChangeSet): string {
-        return this.createdByDisplayValues.find(v => v.key === changeSet.id)?.value ?? '';
+        const foundDisplayValue: string | undefined = this.createdByDisplayValues.find(v => v.key === changeSet.id)?.value;
+        if (!foundDisplayValue) {
+            throw new Error(`
+                No display value for the change set created by ${changeSet.createdBy} could be generated.
+                Please check your "getDisplayValueForCreatedBy" function.
+            `);
+        }
+        return foundDisplayValue;
     }
 }

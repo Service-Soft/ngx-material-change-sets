@@ -196,9 +196,6 @@ export abstract class BaseChangeSetService {
      * @returns The type in uppercase by default.
      */
     getOperationName(changeSet: ChangeSet): string {
-        // if (changeSet.type === ChangeSetType.REPLACE) {
-        //     return `${ChangeSetType.UPDATE}`.toUpperCase();
-        // }
         return `${changeSet.type}`.toUpperCase();
     }
 
