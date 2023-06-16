@@ -1,4 +1,4 @@
-<form #formControl="ngForm" (ngSubmit)="updateEntity()" style="display: flex; margin-top: 20px; justify-content: center; align-items: center; gap: 15px">
+<form *ngIf="entity" #formControl="ngForm" (ngSubmit)="updateEntity()" style="display: flex; margin-top: 20px; justify-content: center; align-items: center; gap: 15px">
     <mat-form-field>
         <mat-label>First Name</mat-label>
         <input matInput [(ngModel)]="entity.firstName" name="firstName" type="text">
@@ -11,7 +11,7 @@
 </form>
 
 <h2 style="text-align: center;">Changes</h2>
-<div style="margin-left: 5%; margin-right: 5%;">
-    <ngx-mat-change-sets [entity]="entity" [changeSetsApiBaseUrl]="testBaseUrl">
+<div *ngIf="entity" style="margin-left: 5%; margin-right: 5%;">
+    <ngx-mat-change-sets [entity]="entity" [changeSetsApiBaseUrl]="testBaseUrl" [config]="config">
     </ngx-mat-change-sets>
 </div>

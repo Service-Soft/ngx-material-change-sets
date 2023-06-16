@@ -45,6 +45,18 @@ export abstract class BaseChangeSetService {
      * @default 'Reset'
      */
     protected readonly resetButtonLabel: string = 'Reset';
+    /**
+     * The label for the button that resets a single change set.
+     *
+     * @default 'This change set'
+     */
+    protected readonly resetSingleChangeSetLabel: string = 'This change set';
+    /**
+     * The label for the button that rolls back to the change set.
+     *
+     * @default 'Rollback all to this state'
+     */
+    protected readonly rollbackToChangeSetLabel: string = 'Rollback all to this state';
 
     /**
      * The format for the created at date.
@@ -128,6 +140,8 @@ export abstract class BaseChangeSetService {
         return {
             dateFormat: this.dateFormat,
             resetButtonLabel: this.resetButtonLabel,
+            resetSingleChangeSetLabel: this.resetSingleChangeSetLabel,
+            rollbackToChangeSetLabel: this.rollbackToChangeSetLabel,
             canOpenCreatedBy: this.canOpenCreatedBy,
             displayValueForEmptyCreatedBy: this.displayValueForEmptyCreatedBy,
             getDisplayValueForCreatedBy: changeSet => this.getDisplayValueForCreatedBy(changeSet),

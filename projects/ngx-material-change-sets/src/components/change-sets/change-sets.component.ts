@@ -11,6 +11,11 @@ import { BaseChangeSetService, NGX_CHANGE_SET_SERVICE } from '../../services/cha
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ChangeSetsConfig } from './change-sets-config.model';
 
+const emptyEntity: ChangeSetEntity = {
+    id: '',
+    changeSets: []
+};
+
 /**
  * A component that displays all change sets for the given @Input "entity".
  */
@@ -54,7 +59,7 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
         void this.updateEntity(value);
     }
     // eslint-disable-next-line jsdoc/require-jsdoc
-    internalEntity!: EntityType;
+    internalEntity: EntityType = emptyEntity as EntityType;
 
     /**
      * The api base url for the change sets.
@@ -76,7 +81,7 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
     @Input()
     config?: Partial<ChangeSetsConfig>;
     // eslint-disable-next-line jsdoc/require-jsdoc
-    internalConfig!: ChangeSetsConfig;
+    internalConfig: ChangeSetsConfig = { ...this.changeSetService.configuration, ...this.config };
 
     /**
      * The change sets that should actually be displayed on the current pagination index.
@@ -201,17 +206,10 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
      * This encapsulates the functionality of the async configuration function.
      *
      * @param changeSet - The change set to get the display value for.
-     * @returns The found display value of the local array.
-     * @throws When the value to display is nullish or ''.
+     * @returns The found display value of the local array or '...',
+     * indicating that the display value is still loading.
      */
     getDisplayValueForCreatedBy(changeSet: ChangeSet): string {
-        const foundDisplayValue: string | undefined = this.createdByDisplayValues.find(v => v.key === changeSet.id)?.value;
-        if (!foundDisplayValue) {
-            throw new Error(`
-                No display value for the change set created by ${changeSet.createdBy} could be generated.
-                Please check your "getDisplayValueForCreatedBy" function.
-            `);
-        }
-        return foundDisplayValue;
+        return this.createdByDisplayValues.find(v => v.key === changeSet.id)?.value ?? '...';
     }
 }

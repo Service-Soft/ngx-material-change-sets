@@ -48,8 +48,8 @@
             {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
         </button>
         <mat-menu #menu="matMenu">
-            <button type="button" [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)" mat-menu-item>This change set</button>
-            <button type="button" (click)="rollbackToChangeSet(changeSet)" mat-menu-item>Rollback all to this state</button>
+            <button type="button" [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)" mat-menu-item>{{internalConfig.resetSingleChangeSetLabel}}</button>
+            <button type="button" (click)="rollbackToChangeSet(changeSet)" mat-menu-item>{{internalConfig.rollbackToChangeSetLabel}}</button>
         </mat-menu>
     </div>
 

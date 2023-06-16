@@ -54,11 +54,23 @@ export interface ChangeSetsConfig {
      */
     displayValueForEmptyCreatedBy: boolean,
     /**
-     * The label for the reset button.
+     * The label for the reset button. Opens further operations.
      *
      * @default 'Reset'
      */
     resetButtonLabel: string,
+    /**
+     * The label for the button that resets a single change set.
+     *
+     * @default 'This change set'
+     */
+    resetSingleChangeSetLabel: string,
+    /**
+     * The label for the button that rolls back to the change set.
+     *
+     * @default 'Rollback all to this state'
+     */
+    rollbackToChangeSetLabel: string,
     /**
      * The label for the label under which all keys are listed that have been changed.
      *
