@@ -1,4 +1,3 @@
-/* eslint-disable @cspell/spellchecker */
 /* eslint-disable jsdoc/require-jsdoc */
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -29,8 +28,25 @@ export class AppComponent implements OnInit {
         this.entity = (await firstValueFrom(this.http.get<TestEntity[]>(this.testBaseUrl)))[0];
     }
 
+    addListItem(value: string): void {
+        if (!this.entity.listItems) {
+            this.entity.listItems = [];
+        }
+        this.entity.listItems.push(value);
+    }
+
+    removeListItem(value: string): void {
+        this.entity.listItems?.splice(this.entity.listItems.indexOf(value), 1);
+    }
+
     async updateEntity(): Promise<void> {
-        const body: Omit<TestEntity, 'id' | 'changeSets'> = { firstName: this.entity.firstName, lastName: this.entity.lastName };
+        const body: Omit<TestEntity, 'id' | 'changeSets'> = {
+            address: this.entity.address,
+            birthDay: this.entity.birthDay,
+            firstName: this.entity.firstName,
+            lastName: this.entity.lastName,
+            listItems: this.entity.listItems
+        };
         await firstValueFrom(this.http.patch<void>(`${this.testBaseUrl}/${this.entity.id}`, body));
         this.entity = (await firstValueFrom(this.http.get<TestEntity[]>(this.testBaseUrl)))[0];
     }

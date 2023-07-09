@@ -2,6 +2,7 @@ $table-border-color: #dddddd;
 
 mat-expansion-panel {
     mat-expansion-panel-header {
+        user-select: none;
         padding: 15px;
         height: auto;
     }
@@ -56,7 +57,17 @@ mat-panel-title {
     }
 }
 
+.change-set-details {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 table {
+    table-layout: fixed;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0px;
@@ -90,10 +101,13 @@ table {
 
     .change-arrow,
     .change-arrow-header {
-        width: 1px;
+        width: 20.25px;
+        padding-left: 0px;
+        padding-right: 0px;
     }
 
     .change-arrow i {
+        margin-right: 0px;
         font-size: 20px;
     }
 
@@ -101,6 +115,13 @@ table {
         border-radius: 5px;
         padding: 5px;
         height: 100%;
+        display: flex;
+        justify-content: center;
+
+        pre {
+            margin: 0;
+            text-align: left;
+        }
     }
 
     .change-previous-value .change-value-field {

@@ -41,6 +41,12 @@ export interface ChangeSetsConfig {
      */
     shortDateFormat: string,
     /**
+     * The value to use to format date values.
+     *
+     * @default 'dd.MM.yyyy HH:mm'
+     */
+    valueDateFormat: string,
+    /**
      * Whether or not the "createdBy" can be clicked to eg. Navigate to a user that created the change set.
      *
      * @default true

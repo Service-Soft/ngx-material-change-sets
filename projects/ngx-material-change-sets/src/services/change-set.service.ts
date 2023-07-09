@@ -73,6 +73,13 @@ export abstract class BaseChangeSetService {
     protected readonly shortDateFormat: string = 'dd.MM.yyyy';
 
     /**
+     * The value to use to format date values.
+     *
+     * @default 'dd.MM.yyyy HH:mm'
+     */
+    protected readonly valueDateFormat: string = 'dd.MM.yyyy HH:mm';
+
+    /**
      * The label for the reset button.
      *
      * @default true
@@ -153,6 +160,7 @@ export abstract class BaseChangeSetService {
             previousValueLabel: this.previousValueLabel,
             newValueLabel: this.newValueLabel,
             shortDateFormat: this.shortDateFormat,
+            valueDateFormat: this.valueDateFormat,
             rollbackConfirmDialogData: this.rollbackConfirmDialogData,
             resetConfirmDialogData: this.resetConfirmDialogData
         };

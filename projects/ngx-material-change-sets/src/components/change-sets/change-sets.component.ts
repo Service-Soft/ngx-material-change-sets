@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, KeyValue, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { DatePipe, KeyValue, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { firstValueFrom } from 'rxjs';
 import { ChangeSet, ChangeSetEntity, ChangeSetType } from '../../models';
+import { ChangeValuePipe } from '../../pipes';
 import { BaseChangeSetService, NGX_CHANGE_SET_SERVICE } from '../../services/change-set.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ChangeSetsConfig } from './change-sets-config.model';
@@ -34,10 +35,10 @@ const emptyEntity: ChangeSetEntity = {
         MatExpansionModule,
         MatButtonModule,
         DatePipe,
-        AsyncPipe,
         MatMenuModule,
         MatDialogModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        ChangeValuePipe
     ]
 })
 export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetService extends BaseChangeSetService> implements OnInit {
@@ -104,6 +105,16 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
         }
         this.internalChangeSetsApiBaseUrl = this.changeSetsApiBaseUrl;
         this.internalConfig = { ...this.changeSetService.configuration, ...this.config };
+    }
+
+    /**
+     * Whether or not the content of the <pre> element should be wrapped instead of displaying a scrollbar.
+     *
+     * @param value - The value to check.
+     * @returns True for empty arrays or arrays that don't have objects as item type. False for everything else.
+     */
+    shouldWrapPreContent(value: unknown): value is unknown[] {
+        return Array.isArray(value) && (!value.length || typeof value[0] != 'object');
     }
 
     /**
