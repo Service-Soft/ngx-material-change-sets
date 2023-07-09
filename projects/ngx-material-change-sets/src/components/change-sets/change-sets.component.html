@@ -69,15 +69,15 @@
                 <td class="change-key">{{change.key}}</td>
                 <td class="change-previous-value">
                     <div class="change-value-field">
-                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapArray(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                        <pre style="overflow: auto;" *ngIf="!shouldWrapArray(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                        <pre style="overflow: auto;" *ngIf="!shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
                     </div>
                 </td>
                 <td class="change-arrow"><i class="fas fa-arrow-right-long"></i></td>
                 <td class="change-new-value">
                     <div class="change-value-field">
-                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapArray(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                        <pre style="overflow: auto;" *ngIf="!shouldWrapArray(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                        <pre style="overflow: auto;" *ngIf="!shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
                     </div>
                 </td>
             </tr>
