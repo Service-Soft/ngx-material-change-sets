@@ -45,7 +45,7 @@
                 <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
             </span>
         </span>
-        <button type="button" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
+        <button type="button" [disabled]="!canResetAndRollback()" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
             {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
         </button>
         <mat-menu #menu="matMenu">

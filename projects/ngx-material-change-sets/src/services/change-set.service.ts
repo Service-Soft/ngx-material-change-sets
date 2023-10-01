@@ -41,76 +41,71 @@ export type RollbackChangeSetBody = ResetChangeSetBody;
 export abstract class BaseChangeSetService {
     /**
      * The label for the reset button.
-     *
      * @default 'Reset'
      */
     protected readonly resetButtonLabel: string = 'Reset';
     /**
      * The label for the button that resets a single change set.
-     *
      * @default 'This change set'
      */
     protected readonly resetSingleChangeSetLabel: string = 'This change set';
     /**
      * The label for the button that rolls back to the change set.
-     *
      * @default 'Rollback all to this state'
      */
     protected readonly rollbackToChangeSetLabel: string = 'Rollback all to this state';
 
     /**
      * The format for the created at date.
-     *
      * @default 'dd.MM.yyyy HH:mm'
      */
     protected readonly dateFormat: string = 'dd.MM.yyyy HH:mm';
 
     /**
      * The format to use for the created at timestamp when on mobile devices.
-     *
      * @default 'dd.MM.yyyy'
      */
     protected readonly shortDateFormat: string = 'dd.MM.yyyy';
 
     /**
      * The value to use to format date values.
-     *
      * @default 'dd.MM.yyyy HH:mm'
      */
     protected readonly valueDateFormat: string = 'dd.MM.yyyy HH:mm';
 
     /**
-     * The label for the reset button.
-     *
+     * Whether or not the "createdBy" can be clicked to eg. Navigate to a user that created the change set.
      * @default true
      */
-    protected readonly canOpenCreatedBy: boolean = true;
+    protected readonly canOpenCreatedBy: boolean | (() => boolean) = true;
+
+    /**
+     * Whether or not the user can reset or rollback changes.
+     * @default true*
+     */
+    protected readonly canResetAndRollback: boolean | (() => boolean) = true;
 
     /**
      * Whether or not a display value should be shown for an empty created by value.
      * You could eg. Display something like "System".
-     *
      * @default false
      */
     protected readonly displayValueForEmptyCreatedBy: boolean = false;
 
     /**
      * The label for the label under which all keys are listed that have been changed.
-     *
      * @default 'Property'
      */
     protected readonly changeKeyLabel: string = 'Property';
 
     /**
      * The label for the previous value of a change.
-     *
      * @default 'Previous Value'
      */
     protected readonly previousValueLabel: string = 'Previous Value';
 
     /**
      * The label for the new value of a change.
-     *
      * @default 'New Value'
      */
     protected readonly newValueLabel: string = 'New Value';
@@ -150,6 +145,7 @@ export abstract class BaseChangeSetService {
             resetSingleChangeSetLabel: this.resetSingleChangeSetLabel,
             rollbackToChangeSetLabel: this.rollbackToChangeSetLabel,
             canOpenCreatedBy: this.canOpenCreatedBy,
+            canResetAndRollback: this.canResetAndRollback,
             displayValueForEmptyCreatedBy: this.displayValueForEmptyCreatedBy,
             getDisplayValueForCreatedBy: changeSet => this.getDisplayValueForCreatedBy(changeSet),
             rollbackToChangeSet: (changeSet, changeSetsApiBaseUrl) => this.rollbackToChangeSet(changeSet, changeSetsApiBaseUrl),
@@ -173,7 +169,6 @@ export abstract class BaseChangeSetService {
      * By default this sends a POST request to `${changeSetsApiBaseUrl}/${changeSet.changeSetEntityId}/reset`.
      * The body contains the id of the change set to reset.
      * It expects the request to return the updated entity including its change sets to update the ui.
-     *
      * @param changeSet - The change set to reset.
      * @param changeSetsApiBaseUrl - The api base url for the change sets.
      * This is not set in the method because resetting a change set might be different for each entity.
@@ -189,7 +184,6 @@ export abstract class BaseChangeSetService {
      * All change sets after after that state including this one are deleted.
      * By default this sends a POST request to `${changeSetsApiBaseUrl}/${changeSet.id}/rollback`.
      * It expects the request to return the updated entity including its change sets to update the ui.
-     *
      * @param changeSet - The change set to rollback.
      * @param changeSetsApiBaseUrl - The api base url for the change sets.
      * This is not set in the method because rollbacks might be different for each entity.
@@ -203,7 +197,6 @@ export abstract class BaseChangeSetService {
 
     /**
      * How to display the "createdBy" in the component.
-     *
      * @param changeSet - The change set.
      * @returns Simple the createdBy value by default.
      */
@@ -213,7 +206,6 @@ export abstract class BaseChangeSetService {
 
     /**
      * What to do when the user clicks on the createdBy link and canOpenCreatedBy is enabled.
-     *
      * @param changeSet - The change set.
      * @returns The type in uppercase by default.
      */
@@ -224,7 +216,6 @@ export abstract class BaseChangeSetService {
     /**
      * Opens the createdBy value.
      * This is most likely used to display the user profile of the person that created the change.
-     *
      * @param changeSet - The change set.
      */
     abstract openCreatedBy(changeSet: ChangeSet): Promise<void>;

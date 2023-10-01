@@ -30,86 +30,78 @@ export interface ConfirmDialogData {
 export interface ChangeSetsConfig {
     /**
      * The format to use for the created at timestamp.
-     *
      * @default 'dd.MM.yyyy HH:mm'
      */
     dateFormat: string,
     /**
      * The format to use for the created at timestamp when on mobile devices.
-     *
      * @default 'dd.MM.yyyy'
      */
     shortDateFormat: string,
     /**
      * The value to use to format date values.
-     *
      * @default 'dd.MM.yyyy HH:mm'
      */
     valueDateFormat: string,
     /**
      * Whether or not the "createdBy" can be clicked to eg. Navigate to a user that created the change set.
-     *
-     * @default true
+     * @default () => true
      */
-    canOpenCreatedBy: boolean,
+    canOpenCreatedBy: boolean | (() => boolean),
+    /**
+     * Whether or not the user can reset or rollback changes.
+     * If this resolves to false, no Reset button is displayed.
+     * @default () => true
+     */
+    canResetAndRollback: boolean | (() => boolean),
     /**
      * Whether or not a display value should be shown for an empty created by value.
      * You could eg. Display something like "System".
-     *
      * @default false
      */
     displayValueForEmptyCreatedBy: boolean,
     /**
      * The label for the reset button. Opens further operations.
-     *
      * @default 'Reset'
      */
     resetButtonLabel: string,
     /**
      * The label for the button that resets a single change set.
-     *
      * @default 'This change set'
      */
     resetSingleChangeSetLabel: string,
     /**
      * The label for the button that rolls back to the change set.
-     *
      * @default 'Rollback all to this state'
      */
     rollbackToChangeSetLabel: string,
     /**
      * The label for the label under which all keys are listed that have been changed.
-     *
      * @default 'Property'
      */
     changeKeyLabel: string,
     /**
      * The label for the previous value of a change.
-     *
      * @default 'Previous Value'
      */
     previousValueLabel: string,
     /**
      * The label for the new value of a change.
-     *
      * @default 'New Value'
      */
     newValueLabel: string,
     /**
      * How to display the "createdBy" in the component.
-     *
      * @default simply return createdBy
      */
     getDisplayValueForCreatedBy: (changeSet: ChangeSet) => Promise<string>,
     /**
      * What to do when the user clicks on the "Rollback to this change set" button.
-     *
      * @default Uses the service to send a request.
      */
     rollbackToChangeSet: (changeSet: ChangeSet, changeSetsApiBaseUrl: string) => Promise<ChangeSetEntity>,
     /**
      * What to do when the user clicks on the "Reset this change set" button.
-     *
      * @default Uses the service to send a request.
      */
     resetChangeSet: (changeSet: ChangeSet, changeSetsApiBaseUrl: string) => Promise<ChangeSetEntity>,
@@ -119,7 +111,6 @@ export interface ChangeSetsConfig {
     openCreatedBy: (changeSet: ChangeSet) => Promise<void>,
     /**
      * What to do when the user clicks on the createdBy link and canOpenCreatedBy is enabled.
-     *
      * @default Returns the provided type in uppercase.
      */
     getOperationName: (changeSet: ChangeSet) => string,

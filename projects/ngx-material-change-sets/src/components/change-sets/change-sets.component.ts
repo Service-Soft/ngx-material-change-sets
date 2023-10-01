@@ -109,7 +109,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
 
     /**
      * Whether or not the content of the <pre> element should be wrapped instead of displaying a scrollbar.
-     *
      * @param value - The value to check.
      * @returns True for empty arrays or arrays that don't have objects as item type. False for everything else.
      */
@@ -119,7 +118,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
 
     /**
      * Stops opening the expansion panel and then calls the openCreatedBy method when "canOpenCreatedBy" is enabled.
-     *
      * @param event - The MouseEvent. Is needed to disable opening/closing of the expansion panel.
      * @param changeSet - The change set for which createdBy should be opened.
      */
@@ -132,9 +130,19 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
     }
 
     /**
+     * Whether the reset and rollback actions are enabled or not.
+     * @returns True when either the specific configuration or the default config resolves to true.
+     */
+    canResetAndRollback(): boolean {
+        if (typeof this.internalConfig.canResetAndRollback === 'boolean') {
+            return this.internalConfig.canResetAndRollback;
+        }
+        return this.internalConfig.canResetAndRollback();
+    }
+
+    /**
      * Resets the given change set using the method of the configuration.
      * The result is then used to update the entity.
-     *
      * @param changeSet - The change set to reset.
      */
     async resetChangeSet(changeSet: ChangeSet): Promise<void> {
@@ -154,7 +162,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
     /**
      * Rolls back to the given change set using the method of the configuration.
      * The result is then used to update the entity.
-     *
      * @param changeSet - The change set to rollback to.
      */
     async rollbackToChangeSet(changeSet: ChangeSet): Promise<void> {
@@ -174,7 +181,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
 
     /**
      * Used by the ngFor to not rerender entries with the same id.
-     *
      * @param index - The index of the element.
      * @param item - The actual change set element.
      * @returns The id of the change set, which is used to determine if two elements are equal.
@@ -185,7 +191,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
 
     /**
      * Updates the entity and sorts the changesets descending by their creation date.
-     *
      * @param updatedEntity - The new entity value.
      */
     private async updateEntity(updatedEntity: EntityType): Promise<void> {
@@ -202,7 +207,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
 
     /**
      * Filters the entities change sets with the pagination event.
-     *
      * @param event - The event from the paginator.
      */
     filterChangeSets(event: PageEvent): void {
@@ -215,7 +219,6 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
     /**
      * Gets the string to display for the created by value.
      * This encapsulates the functionality of the async configuration function.
-     *
      * @param changeSet - The change set to get the display value for.
      * @returns The found display value of the local array or '...',
      * indicating that the display value is still loading.
