@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+
 import { ConfirmDialogData } from '../change-sets/change-sets-config.model';
 
 /**
@@ -10,7 +11,7 @@ import { ConfirmDialogData } from '../change-sets/change-sets-config.model';
  * Confirm closes the dialog with "true", cancel closes it with "false".
  */
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
+    // eslint-disable-next-line angular/component-selector
     selector: 'app-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',
     styleUrls: ['./confirm-dialog.component.scss'],

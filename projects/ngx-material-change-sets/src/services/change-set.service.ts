@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { InjectionToken } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+
 import { ChangeSetsConfig as ChangeSetsConfiguration, ConfirmDialogData } from '../components/change-sets/change-sets-config.model';
 import { ChangeSet, ChangeSetEntity } from '../models';
 
-// eslint-disable-next-line @typescript-eslint/typedef
+// eslint-disable-next-line jsdoc/require-jsdoc, typescript/typedef
 export const NGX_CHANGE_SET_SERVICE = new InjectionToken<BaseChangeSetService>(
     'Provide for the change set service used eg. to rollback changes or generate a link to the user that created a change.',
     {
@@ -12,7 +13,7 @@ export const NGX_CHANGE_SET_SERVICE = new InjectionToken<BaseChangeSetService>(
         factory: (() => {
             // eslint-disable-next-line no-console
             console.error(
-                // eslint-disable-next-line max-len
+                // eslint-disable-next-line stylistic/max-len
                 'No ChangeSetService has been provided for the token NGX_CHANGE_SET_SERVICE\nAdd this to your app.module.ts provider array:\n{\n    provide: NGX_CHANGE_SET_SERVICE,\n    useExisting: MyChangeSetService\n}'
             );
         }) as () => BaseChangeSetService
@@ -191,8 +192,9 @@ export abstract class BaseChangeSetService {
      */
     async rollbackToChangeSet(changeSet: ChangeSet, changeSetsApiBaseUrl: string): Promise<ChangeSetEntity> {
         const body: RollbackChangeSetBody = { changeSetId: changeSet.id };
-        // eslint-disable-next-line max-len
-        return await firstValueFrom(this.http.post<ChangeSetEntity>(`${changeSetsApiBaseUrl}/${changeSet.changeSetEntityId}/rollback`, body));
+        return await firstValueFrom(
+            this.http.post<ChangeSetEntity>(`${changeSetsApiBaseUrl}/${changeSet.changeSetEntityId}/rollback`, body)
+        );
     }
 
     /**

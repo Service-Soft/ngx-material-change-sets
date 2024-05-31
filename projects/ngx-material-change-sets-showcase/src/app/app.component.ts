@@ -1,15 +1,33 @@
-/* eslint-disable jsdoc/require-jsdoc */
+
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ChangeSetsConfig } from 'ngx-material-change-sets';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ChangeSetsComponent, ChangeSetsConfig } from 'ngx-material-change-sets';
 import { firstValueFrom } from 'rxjs';
+
 import { TestEntity } from '../models/test-entity.model';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [
+        ChangeSetsComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatChipsModule
+    ]
 })
 export class AppComponent implements OnInit {
 
@@ -23,9 +41,11 @@ export class AppComponent implements OnInit {
 
     constructor(private readonly http: HttpClient) {}
 
-    async ngOnInit(): Promise<void> {
-        await new Promise(res => setTimeout(res, 1000));
-        this.entity = (await firstValueFrom(this.http.get<TestEntity[]>(this.testBaseUrl)))[0];
+    ngOnInit(): void {
+        // eslint-disable-next-line promise/prefer-await-to-then
+        void new Promise(resolve => setTimeout(resolve, 1000)).then(async () => {
+            this.entity = (await firstValueFrom(this.http.get<TestEntity[]>(this.testBaseUrl)))[0];
+        });
     }
 
     addListItem(value: string): void {

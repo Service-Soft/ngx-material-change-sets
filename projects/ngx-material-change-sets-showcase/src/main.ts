@@ -1,8 +1,22 @@
 /* eslint-disable no-console */
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { provideHttpClient } from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { NGX_CHANGE_SET_SERVICE } from 'ngx-material-change-sets';
 
-import { AppModule } from './app/app.module';
+import { AppComponent } from './app/app.component';
+import { ChangeSetService } from './services/change-set.service';
 
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-    .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+    providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideAnimations(),
+        {
+            provide: NGX_CHANGE_SET_SERVICE,
+            useExisting: ChangeSetService
+        }
+    ]
+// eslint-disable-next-line promise/prefer-await-to-callbacks
+}).catch(error => console.error(error));

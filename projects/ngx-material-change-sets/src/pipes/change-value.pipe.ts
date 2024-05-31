@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
+
 import { ValueType } from '../models';
 
 /**
@@ -15,7 +16,7 @@ export class ChangeValuePipe implements PipeTransform {
 
     // eslint-disable-next-line jsdoc/require-jsdoc
     transform(value: unknown, format: string): unknown {
-        if (value == null) {
+        if (value == undefined) {
             return '-';
         }
         switch (this.typeOfChange(value)) {
@@ -35,10 +36,10 @@ export class ChangeValuePipe implements PipeTransform {
             return JSON.stringify(value, undefined, 2);
         }
         let result: string = JSON.stringify(value, undefined, 1);
-        result = result.replace(/^ +/gm, ' '); // remove all but the first space for each line
-        result = result.replace(/\n/g, ''); // remove line-breaks
-        result = result.replace(/{ /g, '{').replace(/ }/g, '}'); // remove spaces between object-braces and first/last props
-        result = result.replace(/\[ /g, '[').replace(/ \]/g, ']'); // remove spaces between array-brackets and first/last items
+        result = result.replaceAll(/^ +/gm, ' '); // remove all but the first space for each line
+        result = result.replaceAll('\n', ''); // remove line-breaks
+        result = result.replaceAll('{ ', '{').replaceAll(' }', '}'); // remove spaces between object-braces and first/last props
+        result = result.replaceAll('[ ', '[').replaceAll(' ]', ']'); // remove spaces between array-brackets and first/last items
         return result;
     }
 

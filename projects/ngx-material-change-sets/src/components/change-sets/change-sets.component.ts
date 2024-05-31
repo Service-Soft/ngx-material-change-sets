@@ -6,11 +6,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { firstValueFrom } from 'rxjs';
+
+import { ChangeSetsConfig } from './change-sets-config.model';
 import { ChangeSet, ChangeSetEntity, ChangeSetType } from '../../models';
 import { ChangeValuePipe } from '../../pipes';
 import { BaseChangeSetService, NGX_CHANGE_SET_SERVICE } from '../../services/change-set.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { ChangeSetsConfig } from './change-sets-config.model';
 
 const emptyEntity: ChangeSetEntity = {
     id: '',
@@ -21,7 +22,7 @@ const emptyEntity: ChangeSetEntity = {
  * A component that displays all change sets for the given @Input "entity".
  */
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
+    // eslint-disable-next-line angular/component-selector
     selector: 'ngx-mat-change-sets',
     templateUrl: './change-sets.component.html',
     styleUrls: ['./change-sets.component.scss'],
@@ -54,7 +55,7 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
      */
     @Input()
     set entity(value: EntityType) {
-        if (value == null) {
+        if (value == undefined) {
             throw new Error('No "entity" has been provided.');
         }
         void this.updateEntity(value);
@@ -123,10 +124,18 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
      */
     async openCreatedBy(event: MouseEvent, changeSet: ChangeSet): Promise<void> {
         event.stopPropagation();
-        if (!this.internalConfig.canOpenCreatedBy) {
+        const canOpenCreatedBy: boolean = this.resolveCanOpenCreatedBy(this.internalConfig.canOpenCreatedBy);
+        if (!canOpenCreatedBy) {
             return;
         }
         await this.internalConfig.openCreatedBy(changeSet);
+    }
+
+    private resolveCanOpenCreatedBy(value: (boolean | (() => boolean))): boolean {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        return value();
     }
 
     /**
@@ -172,21 +181,13 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
         });
         const confirmResult: boolean | undefined = await firstValueFrom(dialogRef.afterClosed());
         if (confirmResult === true) {
-            // eslint-disable-next-line max-len
-            const updatedEntity: EntityType = await this.internalConfig.rollbackToChangeSet(changeSet, this.internalChangeSetsApiBaseUrl) as EntityType;
+            const updatedEntity: EntityType = await this.internalConfig.rollbackToChangeSet(
+                changeSet,
+                this.internalChangeSetsApiBaseUrl
+            ) as EntityType;
             await this.updateEntity(updatedEntity);
             this.paginator.pageIndex = 0;
         }
-    }
-
-    /**
-     * Used by the ngFor to not rerender entries with the same id.
-     * @param index - The index of the element.
-     * @param item - The actual change set element.
-     * @returns The id of the change set, which is used to determine if two elements are equal.
-     */
-    trackById(index: number, item: ChangeSet): string {
-        return item.id;
     }
 
     /**
@@ -212,7 +213,7 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
     filterChangeSets(event: PageEvent): void {
         this.pageSize = event.pageSize;
         const from: number = event.pageIndex * event.pageSize;
-        const until: number = event.pageIndex * event.pageSize + event.pageSize;
+        const until: number = (event.pageIndex * event.pageSize) + event.pageSize;
         this.filteredChangeSets = this.internalEntity.changeSets.slice(from, until);
     }
 

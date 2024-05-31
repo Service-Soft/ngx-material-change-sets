@@ -1,90 +1,91 @@
-<!-- eslint-disable @angular-eslint/template/cyclomatic-complexity -->
-<!-- eslint-disable @angular-eslint/template/no-call-expression -->
-<mat-expansion-panel *ngFor="let changeSet of filteredChangeSets; trackBy:trackById">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            <span class="title-operation">
-                <i class="fas"
-                    [class.fa-circle-up]="changeSet.type === ChangeSetType.UPDATE || changeSet.type === ChangeSetType.REPLACE"
-                    [class.fa-circle-plus]="changeSet.type === ChangeSetType.CREATE"
-                    [class.fa-circle-minus]="changeSet.type === ChangeSetType.DELETE"
-                    [class.fa-clock-rotate-left]="changeSet.type === ChangeSetType.RESTORE"
-                    [class.fa-circle-left]="changeSet.type === ChangeSetType.RESET"
-                >
-                </i>
-                <span>{{internalConfig.getOperationName(changeSet)}}</span>
+<!-- eslint-disable angular/no-call-expression -->
+@for (changeSet of filteredChangeSets; track changeSet.id) {
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <span class="title-operation">
+                    <i class="fas"
+                        [class.fa-circle-up]="changeSet.type === ChangeSetType.UPDATE || changeSet.type === ChangeSetType.REPLACE"
+                        [class.fa-circle-plus]="changeSet.type === ChangeSetType.CREATE"
+                        [class.fa-circle-minus]="changeSet.type === ChangeSetType.DELETE"
+                        [class.fa-clock-rotate-left]="changeSet.type === ChangeSetType.RESTORE"
+                        [class.fa-circle-left]="changeSet.type === ChangeSetType.RESET"
+                    >
+                    </i>
+                    <span>{{internalConfig.getOperationName(changeSet)}}</span>
+                </span>
+                
+                <span class="title-created-at">
+                    <i class="far fa-clock"></i>
+                    <span class="date">{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
+                    <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
+                </span>
+    
+                @if (changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy) {
+                    <span class="title-created-by"
+                        [class.created-by-link]="internalConfig.canOpenCreatedBy"
+                        (click)="openCreatedBy($event, changeSet)"
+                    >
+                        <i class="fas fa-user"></i>
+                        <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
+                    </span>
+                }
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    
+        <div class="change-set-details">
+            <span>
+                <div>
+                    <i class="far fa-clock"></i>
+                    <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
+                </div>
+                @if (changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy) {
+                    <span [class.created-by-link]="internalConfig.canOpenCreatedBy" (click)="openCreatedBy($event, changeSet)">
+                        <i class="fas fa-user"></i>
+                        <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
+                    </span>
+                }
             </span>
-            
-            <span class="title-created-at">
-                <i class="far fa-clock"></i>
-                <span class="date">{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
-                <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
-            </span>
-
-            <span class="title-created-by" [class.created-by-link]="internalConfig.canOpenCreatedBy"
-                *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy"
-                (click)="openCreatedBy($event, changeSet)"
-            >
-                <i class="fas fa-user"></i>
-                <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
-            </span>
-        </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <div class="change-set-details">
-        <span>
-            <div>
-                <i class="far fa-clock"></i>
-                <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
-            </div>
-            <span [class.created-by-link]="internalConfig.canOpenCreatedBy"
-                *ngIf="changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy"
-                (click)="openCreatedBy($event, changeSet)"
-            >
-                <i class="fas fa-user"></i>
-                <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
-            </span>
-        </span>
-        <button type="button" [disabled]="!canResetAndRollback()" (click)="$event.stopPropagation()" [matMenuTriggerFor]="menu" mat-raised-button>
-            {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button type="button" [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)" mat-menu-item>{{internalConfig.resetSingleChangeSetLabel}}</button>
-            <button type="button" (click)="rollbackToChangeSet(changeSet)" mat-menu-item>{{internalConfig.rollbackToChangeSetLabel}}</button>
-        </mat-menu>
-    </div>
-
-    <table *ngIf="changeSet.changes?.length">
-        <tr>
-            <th class="change-key-header">{{internalConfig.changeKeyLabel}}</th>
-            <th class="change-previous-value-header">{{internalConfig.previousValueLabel}}</th>
-            <th class="change-arrow-header"></th>
-            <th class="change-new-value-header">{{internalConfig.newValueLabel}}</th>
-        </tr>
-        <ng-container *ngFor="let change of changeSet.changes">
-            <tr>
-                <td colspan="2" class="change-key-header-mobile">{{change.key}}</td>
-            </tr>              
-            <tr>
-                <td class="change-key">{{change.key}}</td>
-                <td class="change-previous-value">
-                    <div class="change-value-field">
-                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                        <pre style="overflow: auto;" *ngIf="!shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                    </div>
-                </td>
-                <td class="change-arrow"><i class="fas fa-arrow-right-long"></i></td>
-                <td class="change-new-value">
-                    <div class="change-value-field">
-                        <pre style="white-space: pre-wrap;" *ngIf="shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                        <pre style="overflow: auto;" *ngIf="!shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
-                    </div>
-                </td>
-            </tr>
-        </ng-container>
-    </table>
-
-</mat-expansion-panel>
+            <button type="button" mat-raised-button [disabled]="!canResetAndRollback()" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+                {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button type="button" mat-menu-item [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)">{{internalConfig.resetSingleChangeSetLabel}}</button>
+                <button type="button" mat-menu-item (click)="rollbackToChangeSet(changeSet)">{{internalConfig.rollbackToChangeSetLabel}}</button>
+            </mat-menu>
+        </div>
+    
+        @if (changeSet.changes.length) {
+            <table>
+                <tr>
+                    <th class="change-key-header">{{internalConfig.changeKeyLabel}}</th>
+                    <th class="change-previous-value-header">{{internalConfig.previousValueLabel}}</th>
+                    <th class="change-arrow-header"></th>
+                    <th class="change-new-value-header">{{internalConfig.newValueLabel}}</th>
+                </tr>
+                @for (change of changeSet.changes; track $index) {
+                    <tr>
+                        <td colspan="2" class="change-key-header-mobile">{{change.key}}</td>
+                    </tr>              
+                    <tr>
+                        <td class="change-key">{{change.key}}</td>
+                        <td class="change-previous-value">
+                            <div class="change-value-field">
+                                <pre [class.wrap]="shouldWrapPreContent(change.previousValue)" [class.no-wrap]="!shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                            </div>
+                        </td>
+                        <td class="change-arrow"><i class="fas fa-arrow-right-long"></i></td>
+                        <td class="change-new-value">
+                            <div class="change-value-field">
+                                <pre [class.wrap]="shouldWrapPreContent(change.newValue)" [class.no-wrap]="!shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }    
+    </mat-expansion-panel>
+}
 
 <mat-paginator [length]="internalEntity.changeSets.length"
     [pageSize]="10"

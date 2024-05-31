@@ -121,6 +121,13 @@ table {
         pre {
             margin: 0;
             text-align: left;
+
+            &.wrap {
+                white-space: pre-wrap;
+            }
+            &.no-wrap {
+                overflow: auto;
+            }
         }
     }
 

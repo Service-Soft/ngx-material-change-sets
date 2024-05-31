@@ -1,55 +1,59 @@
-<form *ngIf="entity" #formControl="ngForm" (ngSubmit)="updateEntity()">
-    <mat-form-field>
-        <mat-label>First Name</mat-label>
-        <input matInput [(ngModel)]="entity.firstName" name="firstName" type="text">
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Last Name</mat-label>
-        <input matInput [(ngModel)]="entity.lastName" name="lastName" type="text">
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Birthday</mat-label>
-        <input matInput [(ngModel)]="entity.birthDay" name="birthDay" [matDatepicker]="picker">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Street</mat-label>
-        <input matInput [(ngModel)]="entity.address.street" name="street" type="text">
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Number</mat-label>
-        <input matInput [(ngModel)]="entity.address.number" name="number" type="text">
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Postcode</mat-label>
-        <input matInput [(ngModel)]="entity.address.postcode" name="postcode" type="text">
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>City</mat-label>
-        <input matInput [(ngModel)]="entity.address.city" name="city" type="text">
-    </mat-form-field>
-
-    <mat-form-field>
-        <mat-label>List Items</mat-label>
-        <mat-chip-grid #chipGrid>
-          <mat-chip-row *ngFor="let item of entity.listItems" (removed)="removeListItem(item)">
-            {{item}}
-            <button type="button" matChipRemove>
-              X
-            </button>
-          </mat-chip-row>
-        </mat-chip-grid>
-        <input
-            [matChipInputFor]="chipGrid"
-            (matChipInputTokenEnd)="addListItem($event.value)"/>
-    </mat-form-field>
-
-    <button [disabled]="formControl.invalid" style="margin-bottom: 25px; margin-left: 10px;" type="submit" mat-raised-button>Update</button>
-</form>
+@if (entity) {
+    <form #formControl="ngForm" (ngSubmit)="updateEntity()">
+        <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input matInput name="firstName" type="text" [(ngModel)]="entity.firstName">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input matInput name="lastName" type="text" [(ngModel)]="entity.lastName">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Birthday</mat-label>
+            <input matInput name="birthDay" [matDatepicker]="picker" [(ngModel)]="entity.birthDay">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Street</mat-label>
+            <input matInput name="street" type="text" [(ngModel)]="entity.address.street">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Number</mat-label>
+            <input matInput name="number" type="text" [(ngModel)]="entity.address.number">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Postcode</mat-label>
+            <input matInput name="postcode" type="text" [(ngModel)]="entity.address.postcode">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>City</mat-label>
+            <input matInput name="city" type="text" [(ngModel)]="entity.address.city">
+        </mat-form-field>
+    
+        <mat-form-field>
+            <mat-label>List Items</mat-label>
+            <mat-chip-grid #chipGrid>
+                @for (item of entity.listItems; track $index) {
+                    <mat-chip-row (removed)="removeListItem(item)">
+                        {{item}}
+                        <button type="button" matChipRemove>
+                        X
+                        </button>
+                    </mat-chip-row>
+                }
+            </mat-chip-grid>
+            <input [matChipInputFor]="chipGrid" (matChipInputTokenEnd)="addListItem($event.value)"/>
+        </mat-form-field>
+    
+        <button style="margin-bottom: 25px; margin-left: 10px;" type="submit" mat-raised-button [disabled]="formControl.invalid">Update</button>
+    </form>
+}
 
 <h2 style="text-align: center;">Changes</h2>
-<div *ngIf="entity" style="margin-left: 5%; margin-right: 5%;">
-    <ngx-mat-change-sets [entity]="entity" [changeSetsApiBaseUrl]="testBaseUrl" [config]="config">
-    </ngx-mat-change-sets>
-</div>
+@if (entity) {
+    <div style="margin-left: 5%; margin-right: 5%;">
+        <ngx-mat-change-sets [entity]="entity" [changeSetsApiBaseUrl]="testBaseUrl" [config]="config">
+        </ngx-mat-change-sets>
+    </div>
+}
