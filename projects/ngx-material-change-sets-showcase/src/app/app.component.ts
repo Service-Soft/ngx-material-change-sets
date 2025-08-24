@@ -49,9 +49,7 @@ export class AppComponent implements OnInit {
     }
 
     addListItem(value: string): void {
-        if (!this.entity.listItems) {
-            this.entity.listItems = [];
-        }
+        this.entity.listItems ??= [];
         this.entity.listItems.push(value);
     }
 

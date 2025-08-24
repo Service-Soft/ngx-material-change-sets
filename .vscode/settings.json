@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://json.schemastore.org/github-workflow.json": "file:///home/timf/Documents/Programmierung/Open-Source/ngx-material-change-sets/.github/workflows/deploy.yml"
-    }
-}

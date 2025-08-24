@@ -148,7 +148,7 @@ export abstract class BaseChangeSetService {
             canOpenCreatedBy: this.canOpenCreatedBy,
             canResetAndRollback: this.canResetAndRollback,
             displayValueForEmptyCreatedBy: this.displayValueForEmptyCreatedBy,
-            getDisplayValueForCreatedBy: changeSet => this.getDisplayValueForCreatedBy(changeSet),
+            getDisplayValueForCreatedBy: async changeSet => await this.getDisplayValueForCreatedBy(changeSet),
             rollbackToChangeSet: (changeSet, changeSetsApiBaseUrl) => this.rollbackToChangeSet(changeSet, changeSetsApiBaseUrl),
             resetChangeSet: (changeSet, changeSetsApiBaseUrl) => this.resetChangeSet(changeSet, changeSetsApiBaseUrl),
             openCreatedBy: changeSet => this.openCreatedBy(changeSet),
@@ -202,7 +202,7 @@ export abstract class BaseChangeSetService {
      * @param changeSet - The change set.
      * @returns Simple the createdBy value by default.
      */
-    async getDisplayValueForCreatedBy(changeSet: ChangeSet): Promise<string> {
+    getDisplayValueForCreatedBy(changeSet: ChangeSet): string | Promise<string> {
         return changeSet.createdBy ?? 'System';
     }
 

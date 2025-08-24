@@ -1,4 +1,4 @@
-import { DatePipe, KeyValue, NgFor, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { DatePipe, KeyValue } from '@angular/common';
 import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -28,11 +28,6 @@ const emptyEntity: ChangeSetEntity = {
     styleUrls: ['./change-sets.component.scss'],
     standalone: true,
     imports: [
-        NgSwitch,
-        NgSwitchCase,
-        NgSwitchDefault,
-        NgFor,
-        NgIf,
         MatExpansionModule,
         MatButtonModule,
         DatePipe,

@@ -1,137 +1,104 @@
 {
     "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
     "newProjectRoot": "projects",
     "projects": {
         "ngx-material-change-sets": {
-            "projectType": "library",
-            "root": "projects/ngx-material-change-sets",
-            "sourceRoot": "projects/ngx-material-change-sets/src",
-            "prefix": "lib",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:ng-packagr",
-                    "options": {
-                        "project": "projects/ngx-material-change-sets/ng-package.json"
-                    },
                     "configurations": {
-                        "production": {
-                            "tsConfig": "projects/ngx-material-change-sets/tsconfig.lib.prod.json"
-                        },
                         "development": {
                             "tsConfig": "projects/ngx-material-change-sets/tsconfig.lib.json"
+                        },
+                        "production": {
+                            "tsConfig": "projects/ngx-material-change-sets/tsconfig.lib.prod.json"
                         }
                     },
-                    "defaultConfiguration": "production"
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
+                    "defaultConfiguration": "production",
                     "options": {
-                        "tsConfig": "projects/ngx-material-change-sets/tsconfig.spec.json",
-                        "polyfills": [
-                            "zone.js",
-                            "zone.js/testing"
-                        ]
+                        "project": "projects/ngx-material-change-sets/ng-package.json"
                     }
                 }
-            }
+            },
+            "prefix": "lib",
+            "projectType": "library",
+            "root": "projects/ngx-material-change-sets",
+            "sourceRoot": "projects/ngx-material-change-sets/src"
         },
         "ngx-material-change-sets-showcase": {
-          "projectType": "application",
-          "schematics": {
-            "@schematics/angular:component": {
-              "style": "scss"
-            }
-          },
-          "root": "projects/ngx-material-change-sets-showcase",
-          "sourceRoot": "projects/ngx-material-change-sets-showcase/src",
-          "prefix": "app",
-          "architect": {
-            "build": {
-              "builder": "@angular-devkit/build-angular:browser",
-              "options": {
-                "outputPath": "dist/ngx-material-change-sets-showcase",
-                "index": "projects/ngx-material-change-sets-showcase/src/index.html",
-                "main": "projects/ngx-material-change-sets-showcase/src/main.ts",
-                "polyfills": [
-                  "zone.js"
-                ],
-                "tsConfig": "projects/ngx-material-change-sets-showcase/tsconfig.app.json",
-                "inlineStyleLanguage": "scss",
-                "assets": [
-                  "projects/ngx-material-change-sets-showcase/src/favicon.ico",
-                  "projects/ngx-material-change-sets-showcase/src/assets"
-                ],
-                "styles": [
-                  "projects/ngx-material-change-sets-showcase/src/styles.scss"
-                ],
-                "scripts": []
-              },
-              "configurations": {
-                "production": {
-                  "budgets": [
-                    {
-                      "type": "initial",
-                      "maximumWarning": "500kb",
-                      "maximumError": "1mb"
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "configurations": {
+                        "development": {
+                            "buildOptimizer": false,
+                            "extractLicenses": false,
+                            "namedChunks": true,
+                            "optimization": false,
+                            "sourceMap": true,
+                            "vendorChunk": true
+                        },
+                        "production": {
+                            "budgets": [
+                                {
+                                    "maximumError": "1mb",
+                                    "maximumWarning": "500kb",
+                                    "type": "initial"
+                                },
+                                {
+                                    "maximumError": "4kb",
+                                    "maximumWarning": "2kb",
+                                    "type": "anyComponentStyle"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        }
                     },
-                    {
-                      "type": "anyComponentStyle",
-                      "maximumWarning": "2kb",
-                      "maximumError": "4kb"
+                    "defaultConfiguration": "production",
+                    "options": {
+                        "assets": [
+                            "projects/ngx-material-change-sets-showcase/src/favicon.ico",
+                            "projects/ngx-material-change-sets-showcase/src/assets"
+                        ],
+                        "index": "projects/ngx-material-change-sets-showcase/src/index.html",
+                        "inlineStyleLanguage": "scss",
+                        "main": "projects/ngx-material-change-sets-showcase/src/main.ts",
+                        "outputPath": "dist/ngx-material-change-sets-showcase",
+                        "polyfills": ["zone.js"],
+                        "scripts": [],
+                        "styles": ["projects/ngx-material-change-sets-showcase/src/styles.scss"],
+                        "tsConfig": "projects/ngx-material-change-sets-showcase/tsconfig.app.json"
                     }
-                  ],
-                  "outputHashing": "all"
                 },
-                "development": {
-                  "buildOptimizer": false,
-                  "optimization": false,
-                  "vendorChunk": true,
-                  "extractLicenses": false,
-                  "sourceMap": true,
-                  "namedChunks": true
-                }
-              },
-              "defaultConfiguration": "production"
-            },
-            "serve": {
-              "builder": "@angular-devkit/build-angular:dev-server",
-              "configurations": {
-                "production": {
-                  "browserTarget": "ngx-material-change-sets-showcase:build:production"
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "buildTarget": "ngx-material-change-sets-showcase:build"
+                    }
                 },
-                "development": {
-                  "browserTarget": "ngx-material-change-sets-showcase:build:development"
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "development": {
+                            "buildTarget": "ngx-material-change-sets-showcase:build:development"
+                        },
+                        "production": {
+                            "buildTarget": "ngx-material-change-sets-showcase:build:production"
+                        }
+                    },
+                    "defaultConfiguration": "development"
                 }
-              },
-              "defaultConfiguration": "development"
             },
-            "extract-i18n": {
-              "builder": "@angular-devkit/build-angular:extract-i18n",
-              "options": {
-                "browserTarget": "ngx-material-change-sets-showcase:build"
-              }
+            "prefix": "app",
+            "projectType": "application",
+            "root": "projects/ngx-material-change-sets-showcase",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "scss"
+                }
             },
-            "test": {
-              "builder": "@angular-devkit/build-angular:karma",
-              "options": {
-                "polyfills": [
-                  "zone.js",
-                  "zone.js/testing"
-                ],
-                "tsConfig": "projects/ngx-material-change-sets-showcase/tsconfig.spec.json",
-                "inlineStyleLanguage": "scss",
-                "assets": [
-                  "projects/ngx-material-change-sets-showcase/src/favicon.ico",
-                  "projects/ngx-material-change-sets-showcase/src/assets"
-                ],
-                "styles": [
-                  "projects/ngx-material-change-sets-showcase/src/styles.scss"
-                ],
-                "scripts": []
-              }
-            }
-          }
+            "sourceRoot": "projects/ngx-material-change-sets-showcase/src"
         }
-    }
+    },
+    "version": 1
 }

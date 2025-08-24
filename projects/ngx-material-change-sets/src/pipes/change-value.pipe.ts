@@ -20,14 +20,18 @@ export class ChangeValuePipe implements PipeTransform {
             return '-';
         }
         switch (this.typeOfChange(value)) {
-            case ValueType.OBJECT:
+            case ValueType.OBJECT: {
                 return JSON.stringify(value, undefined, 1);
-            case ValueType.DATE:
+            }
+            case ValueType.DATE: {
                 return formatDate(value as Date, format, this.locale);
-            case ValueType.ARRAY:
+            }
+            case ValueType.ARRAY: {
                 return this.formatArray(value as unknown[]);
-            case ValueType.OTHER:
+            }
+            case ValueType.OTHER: {
                 return value;
+            }
         }
     }
 
@@ -51,7 +55,7 @@ export class ChangeValuePipe implements PipeTransform {
                     return ValueType.DATE;
                 }
             }
-            catch (error) {}
+            catch {}
             return ValueType.OTHER;
         }
         if (typeof value != 'object') {
