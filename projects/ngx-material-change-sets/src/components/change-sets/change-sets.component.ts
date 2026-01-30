@@ -190,7 +190,7 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
         await this.internalConfig.openCreatedBy(changeSet);
     }
 
-    private resolveCanOpenCreatedBy(value: (boolean | (() => boolean))): boolean {
+    private resolveCanOpenCreatedBy(value: boolean | (() => boolean)): boolean {
         if (typeof value === 'boolean') {
             return value;
         }
