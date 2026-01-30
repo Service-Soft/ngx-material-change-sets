@@ -5,6 +5,8 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
+import { faArrowRightLong, faArrowRotateLeft, faCircleLeft, faCircleMinus, faCirclePlus, faCircleUp, faClock, faClockRotateLeft, faUser } from '@fortawesome/free-solid-svg-icons';
 import { firstValueFrom } from 'rxjs';
 
 import { ChangeSetsConfig } from './change-sets-config.model';
@@ -34,7 +36,8 @@ const emptyEntity: ChangeSetEntity = {
         MatMenuModule,
         MatDialogModule,
         MatPaginatorModule,
-        ChangeValuePipe
+        ChangeValuePipe,
+        FaIconComponent
     ]
 })
 export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetService extends BaseChangeSetService> implements OnInit {
@@ -85,6 +88,15 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
      */
     filteredChangeSets: ChangeSet[] = [];
 
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faClock: IconDefinition = faClock;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faUser: IconDefinition = faUser;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faArrowRightLong: IconDefinition = faArrowRightLong;
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    faArrowRotateLeft: IconDefinition = faArrowRotateLeft;
+
     private pageSize: number = 10;
 
     private createdByDisplayValues: KeyValue<string, string>[] = [];
@@ -101,6 +113,58 @@ export class ChangeSetsComponent<EntityType extends ChangeSetEntity, ChangeSetSe
         }
         this.internalChangeSetsApiBaseUrl = this.changeSetsApiBaseUrl;
         this.internalConfig = { ...this.changeSetService.configuration, ...this.config };
+    }
+
+    /**
+     * Resolves the correct icon for the given change set type.
+     * @param type - The type of change set to resolve the icon for.
+     * @returns An font awesome icon definition.
+     */
+    resolveIconForChangeSetType(type: ChangeSetType): IconDefinition {
+        switch (type) {
+            case ChangeSetType.CREATE: {
+                return faCirclePlus;
+            }
+            case ChangeSetType.DELETE: {
+                return faCircleMinus;
+            }
+            case ChangeSetType.UPDATE:
+            case ChangeSetType.REPLACE: {
+                return faCircleUp;
+            }
+            case ChangeSetType.RESET: {
+                return faCircleLeft;
+            }
+            case ChangeSetType.RESTORE: {
+                return faClockRotateLeft;
+            }
+        }
+    }
+
+    /**
+     * Resolves the correct color for the given change set type.
+     * @param type - The type of change set to resolve the color for.
+     * @returns The resolved css color string.
+     */
+    resolveColorForChangeSetType(type: ChangeSetType): string {
+        switch (type) {
+            case ChangeSetType.CREATE: {
+                return 'green';
+            }
+            case ChangeSetType.DELETE: {
+                return 'red';
+            }
+            case ChangeSetType.UPDATE:
+            case ChangeSetType.REPLACE: {
+                return 'blue';
+            }
+            case ChangeSetType.RESET: {
+                return 'goldenrod';
+            }
+            case ChangeSetType.RESTORE: {
+                return '';
+            }
+        }
     }
 
     /**

@@ -4,19 +4,12 @@
         <mat-expansion-panel-header>
             <mat-panel-title>
                 <span class="title-operation">
-                    <i class="fas"
-                        [class.fa-circle-up]="changeSet.type === ChangeSetType.UPDATE || changeSet.type === ChangeSetType.REPLACE"
-                        [class.fa-circle-plus]="changeSet.type === ChangeSetType.CREATE"
-                        [class.fa-circle-minus]="changeSet.type === ChangeSetType.DELETE"
-                        [class.fa-clock-rotate-left]="changeSet.type === ChangeSetType.RESTORE"
-                        [class.fa-circle-left]="changeSet.type === ChangeSetType.RESET"
-                    >
-                    </i>
+                    <fa-icon [icon]="resolveIconForChangeSetType(changeSet.type)" [style.color]="resolveColorForChangeSetType(changeSet.type)"></fa-icon>
                     <span>{{internalConfig.getOperationName(changeSet)}}</span>
                 </span>
                 
                 <span class="title-created-at">
-                    <i class="far fa-clock"></i>
+                    <fa-icon [icon]="faClock"></fa-icon>
                     <span class="date">{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
                     <span class="short-date">{{changeSet.createdAt | date: internalConfig.shortDateFormat}}</span>
                 </span>
@@ -26,7 +19,7 @@
                         [class.created-by-link]="internalConfig.canOpenCreatedBy"
                         (click)="openCreatedBy($event, changeSet)"
                     >
-                        <i class="fas fa-user"></i>
+                        <fa-icon [icon]="faUser"></fa-icon>
                         <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
                     </span>
                 }
@@ -36,18 +29,18 @@
         <div class="change-set-details">
             <span>
                 <div>
-                    <i class="far fa-clock"></i>
+                    <fa-icon [icon]="faClock"></fa-icon>
                     <span>{{changeSet.createdAt | date: internalConfig.dateFormat}}</span>
                 </div>
                 @if (changeSet.createdBy || internalConfig.displayValueForEmptyCreatedBy) {
                     <span [class.created-by-link]="internalConfig.canOpenCreatedBy" (click)="openCreatedBy($event, changeSet)">
-                        <i class="fas fa-user"></i>
+                        <fa-icon [icon]="faUser"></fa-icon>
                         <span>{{getDisplayValueForCreatedBy(changeSet)}}</span>
                     </span>
                 }
             </span>
             <button type="button" mat-raised-button [disabled]="!canResetAndRollback()" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                {{internalConfig.resetButtonLabel}} <i class="fas fa-arrow-rotate-left"></i>
+                {{internalConfig.resetButtonLabel}} <fa-icon [icon]="faArrowRotateLeft"></fa-icon>
             </button>
             <mat-menu #menu="matMenu">
                 <button type="button" mat-menu-item [disabled]="changeSet.type === ChangeSetType.CREATE" (click)="resetChangeSet(changeSet)">{{internalConfig.resetSingleChangeSetLabel}}</button>
@@ -74,7 +67,9 @@
                                 <pre [class.wrap]="shouldWrapPreContent(change.previousValue)" [class.no-wrap]="!shouldWrapPreContent(change.previousValue)">{{change.previousValue | changeValue: internalConfig.valueDateFormat}}</pre>
                             </div>
                         </td>
-                        <td class="change-arrow"><i class="fas fa-arrow-right-long"></i></td>
+                        <td class="change-arrow">
+                            <fa-icon [icon]="faArrowRightLong"></fa-icon>
+                        </td>
                         <td class="change-new-value">
                             <div class="change-value-field">
                                 <pre [class.wrap]="shouldWrapPreContent(change.newValue)" [class.no-wrap]="!shouldWrapPreContent(change.newValue)">{{change.newValue | changeValue: internalConfig.valueDateFormat}}</pre>
